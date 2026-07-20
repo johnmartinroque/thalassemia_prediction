@@ -24,7 +24,6 @@ import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
@@ -85,7 +84,6 @@ X_test_scaled = scaler.transform(X_test)
 # ---------------------------------------------------------------------
 models = {
     "logistic_regression": LogisticRegression(max_iter=2000),
-    "decision_tree": DecisionTreeClassifier(random_state=42),
     "random_forest": RandomForestClassifier(n_estimators=200, random_state=42),
     "svm": SVC(kernel="rbf", probability=True, random_state=42),
     "knn": KNeighborsClassifier(n_neighbors=3),
