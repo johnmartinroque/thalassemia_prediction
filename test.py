@@ -73,6 +73,8 @@ def main():
     predictions = {}
 
     for name, mdl in all_models.items():
+        if name == "Decision Tree":  # skip decision tree
+            continue
         pred = mdl.predict(X_scaled)[0]
         label = THAL_LABELS.get(pred, str(pred))
         predictions[name] = pred
