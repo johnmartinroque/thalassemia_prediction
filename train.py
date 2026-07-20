@@ -1,13 +1,13 @@
 """
 train.py
 --------
-Trains several ML models to predict the 'thal' result:
+Trains several ML models to predict Thalassemia Status:
     0 = normal
     1 = fixed defect
     2 = reversable defect
 (NOTE: your original data used 0/1/2/3 for thal — see the cleaning step below.)
 
-Inputs used to predict thal:
+Inputs used to predict Thalassemia Status:
     age, sex, cp, trestbps, chol, fbs, restecg, thalach,
     exang, oldpeak, slope, ca, target
 
@@ -50,13 +50,13 @@ df = df.drop_duplicates()
 # This print confirms the full row count made it into the DataFrame.
 print(f"Loaded {len(df)} rows from '{DATA_PATH}' after removing duplicates")
 
-# Your description says thal should be 0/1/2 (normal/fixed/reversable),
-# but the classic UCI heart.csv actually stores thal as 0,1,2,3 (with 0
-# meaning "unknown/missing" in the original source and 1/2/3 meaning
-# normal/fixed/reversable). Some rows may have thal=3 and thal=0.
+# Your description says Thalassemia Status should be 0/1/2 (normal/fixed/
+# reversable), but the classic UCI heart.csv actually stores it as 0,1,2,3
+# (with 0 meaning "unknown/missing" in the original source and 1/2/3
+# meaning normal/fixed/reversable). Some rows may have thal=3 and thal=0.
 # We keep whatever values are in your file and just report which
 # classes exist, so nothing gets silently mislabeled.
-print("Classes found in 'thal' column:", sorted(df[TARGET_COL].unique()))
+print("Classes found in 'Thalassemia Status' column:", sorted(df[TARGET_COL].unique()))
 print("Class counts:\n", df[TARGET_COL].value_counts().sort_index())
 
 X = df[FEATURES]
@@ -66,8 +66,8 @@ y = df[TARGET_COL]
 # 2. Train / test split
 # ---------------------------------------------------------------------
 # With 1026 rows this is a reasonably sized split. stratify=y keeps the
-# class proportions (including any rare thal classes) consistent between
-# train and test sets.
+# class proportions (including any rare Thalassemia Status classes)
+# consistent between train and test sets.
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.25, random_state=42, stratify=y
 )

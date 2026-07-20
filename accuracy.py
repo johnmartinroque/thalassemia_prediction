@@ -8,7 +8,7 @@ Run:
     python accuracy.py
 (must be run after train.py, in the same folder)
 """
-import os 
+import os
 import pandas as pd
 import joblib
 from sklearn.metrics import accuracy_score, classification_report
@@ -39,5 +39,5 @@ scored.sort(key=lambda t: t[1], reverse=True)
 best_name, best_acc, best_preds = scored[0]
 
 print(f"\nBest model: {best_name} ({best_acc:.3f})")
-print(f"\nDetailed report for best model ({best_name}):")
+print(f"\nDetailed report for best model ({best_name}) — Thalassemia Status classification:")
 print(classification_report(y_test, best_preds, zero_division=0))

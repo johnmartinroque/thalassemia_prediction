@@ -2,7 +2,7 @@
 test.py
 -------
 Loads the best model saved by train.py and lets you type in a patient's
-values to get a predicted 'thal' result.
+values to get a predicted Thalassemia Status result.
 
 Run:
     python test.py
@@ -21,9 +21,9 @@ all_models = joblib.load(os.path.join(MODEL_DIR, "all_models.pkl"))
 scaler = joblib.load(os.path.join(MODEL_DIR, "scaler.pkl"))
 features = joblib.load(os.path.join(MODEL_DIR, "features.pkl"))
 
-# Human-readable labels for the thal classes.
+# Human-readable labels for the Thalassemia Status classes.
 # Adjust this if your data uses a different encoding.
-THAL_LABELS = {
+THALASSEMIA_LABELS = {
     0: "normal / unknown",
     1: "normal",
     2: "fixed defect",
@@ -58,7 +58,7 @@ def prompt_float(field_name):
 
 
 def main():
-    print("Enter patient values to predict the 'thal' result.\n")
+    print("Enter patient values to predict the Thalassemia Status result.\n")
 
     # Get user input
     values = [prompt_float(f) for f in features]
@@ -73,10 +73,8 @@ def main():
     predictions = {}
 
     for name, mdl in all_models.items():
-        if name == "Decision Tree":  # skip decision tree
-            continue
         pred = mdl.predict(X_scaled)[0]
-        label = THAL_LABELS.get(pred, str(pred))
+        label = THALASSEMIA_LABELS.get(pred, str(pred))
         predictions[name] = pred
 
         if hasattr(mdl, "predict_proba"):
@@ -87,7 +85,7 @@ def main():
 
     print("\nBest model prediction:")
     best_pred = model.predict(X_scaled)[0]
-    best_label = THAL_LABELS.get(best_pred, str(best_pred))
+    best_label = THALASSEMIA_LABELS.get(best_pred, str(best_pred))
     print(f"{best_label}")
 
 if __name__ == "__main__":
