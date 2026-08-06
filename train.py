@@ -41,10 +41,13 @@ TARGET_COL = "thal"
 # 1. Load data
 # ---------------------------------------------------------------------
 df = pd.read_csv(DATA_PATH)
+print(len(df))                    # should show 1025
+print(len(df.drop_duplicates()))  # should show ~302
 
 # Drop exact duplicate rows so the same patient record can't end up in
 # both train and test — this is what was inflating accuracy to ~98%.
 df = df.drop_duplicates()
+print(f"Loaded {len(df)} rows from '{DATA_PATH}' after removing duplicates")
 
 # No row limiting/sampling happens here — every row in heart.csv is used.
 # This print confirms the full row count made it into the DataFrame.
