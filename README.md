@@ -136,6 +136,4 @@ Predictions are based on the following features:
 
 This project is for educational and demonstrative purposes only. It is **not** a medical diagnostic tool and should not be used to make real clinical decisions.
 
-## License
 
-Add your preferred license here (e.g., MIT).
