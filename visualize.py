@@ -28,6 +28,11 @@ os.makedirs(OUT_DIR, exist_ok=True)
 
 THALASSEMIA_LABELS = {0: "unknown", 1: "normal", 2: "fixed defect", 3: "reversable defect"}
 
+# All charts are rendered at this figure size (inches) so every PNG comes
+# out with the same pixel dimensions: FIGSIZE * DPI.
+FIGSIZE = (8, 6)
+DPI = 150
+
 sns.set_theme(style="whitegrid")
 
 # ---------------------------------------------------------------------
@@ -41,8 +46,13 @@ df["thalassemia_status"] = df["thal"].map(THALASSEMIA_LABELS)
 
 
 def savefig(fig, name):
+    """Save a figure at a fixed size so every output PNG matches in
+    pixel dimensions, regardless of chart type."""
+    fig.set_size_inches(*FIGSIZE)
     path = os.path.join(OUT_DIR, name)
-    fig.savefig(path, bbox_inches="tight", dpi=150)
+    # bbox_inches="tight" is intentionally omitted here (it would crop
+    # each figure differently and undo the fixed sizing).
+    fig.savefig(path, dpi=DPI)
     plt.close(fig)
     print(f"Saved {path}")
 
@@ -50,7 +60,7 @@ def savefig(fig, name):
 # ---------------------------------------------------------------------
 # 2. Thalassemia Status distribution
 # ---------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(7, 5))
+fig, ax = plt.subplots(figsize=FIGSIZE)
 order = sorted(df["thalassemia_status"].dropna().unique(),
                key=lambda l: list(THALASSEMIA_LABELS.values()).index(l))
 sns.countplot(data=df, x="thalassemia_status", order=order, hue="thalassemia_status",
@@ -60,49 +70,54 @@ ax.set_xlabel("Thalassemia Status")
 ax.set_ylabel("Count")
 for container in ax.containers:
     ax.bar_label(container)
+fig.tight_layout()
 savefig(fig, "01_thal_class_distribution.png")
 
 # ---------------------------------------------------------------------
 # 3. Correlation heatmap (numeric features only)
 # ---------------------------------------------------------------------
 numeric_df = df.select_dtypes(include="number")
-fig, ax = plt.subplots(figsize=(10, 8))
+fig, ax = plt.subplots(figsize=FIGSIZE)
 sns.heatmap(numeric_df.corr(), annot=True, fmt=".2f", cmap="coolwarm",
             center=0, square=True, ax=ax)
 ax.set_title("Correlation Heatmap of Numeric Features")
+fig.tight_layout()
 savefig(fig, "02_correlation_heatmap.png")
 
 # ---------------------------------------------------------------------
 # 4. Age distribution split by Thalassemia Status
 # ---------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(8, 5))
+fig, ax = plt.subplots(figsize=FIGSIZE)
 sns.histplot(data=df, x="age", hue="thalassemia_status", multiple="stack",
              bins=15, palette="viridis", ax=ax)
 ax.set_title("Age Distribution by Thalassemia Status")
 ax.set_xlabel("Age")
 ax.set_ylabel("Count")
+fig.tight_layout()
 savefig(fig, "03_age_distribution.png")
 
 # ---------------------------------------------------------------------
 # 5. Max heart rate achieved (thalach) by Thalassemia Status
 # ---------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(7, 5))
+fig, ax = plt.subplots(figsize=FIGSIZE)
 sns.boxplot(data=df, x="thalassemia_status", y="thalach", order=order,
             hue="thalassemia_status", palette="viridis", legend=False, ax=ax)
 ax.set_title("Max Heart Rate Achieved (thalach) by Thalassemia Status")
 ax.set_xlabel("Thalassemia Status")
 ax.set_ylabel("thalach")
+fig.tight_layout()
 savefig(fig, "04_thalach_by_thal.png")
 
 # ---------------------------------------------------------------------
 # 6. Cholesterol by Thalassemia Status
 # ---------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(7, 5))
+fig, ax = plt.subplots(figsize=FIGSIZE)
 sns.boxplot(data=df, x="thalassemia_status", y="chol", order=order,
             hue="thalassemia_status", palette="viridis", legend=False, ax=ax)
 ax.set_title("Serum Cholesterol by Thalassemia Status")
 ax.set_xlabel("Thalassemia Status")
 ax.set_ylabel("chol (mg/dl)")
+fig.tight_layout()
 savefig(fig, "05_chol_by_thal.png")
 
 # ---------------------------------------------------------------------
@@ -110,13 +125,14 @@ savefig(fig, "05_chol_by_thal.png")
 # ---------------------------------------------------------------------
 cross = pd.crosstab(df["thalassemia_status"], df["target"])
 cross = cross.reindex(order)
-fig, ax = plt.subplots(figsize=(7, 5))
+fig, ax = plt.subplots(figsize=FIGSIZE)
 cross.plot(kind="bar", stacked=True, colormap="viridis", ax=ax)
 ax.set_title("Heart Disease Target vs Thalassemia Status")
 ax.set_xlabel("Thalassemia Status")
 ax.set_ylabel("Count")
 ax.legend(title="target (1=disease present)")
 plt.xticks(rotation=0)
+fig.tight_layout()
 savefig(fig, "06_target_vs_thal.png")
 
 # ---------------------------------------------------------------------
@@ -126,9 +142,12 @@ key_features = ["age", "trestbps", "chol", "thalach", "oldpeak"]
 pair_df = df[key_features + ["thalassemia_status"]].dropna()
 g = sns.pairplot(pair_df, hue="thalassemia_status", palette="viridis",
                   diag_kind="hist", plot_kws={"alpha": 0.6, "s": 25})
+# pairplot builds its own multi-axes grid (its size scales with the
+# number of variables), so it's forced to the same overall figure size
+# as every other chart here rather than using savefig().
+g.fig.set_size_inches(*FIGSIZE)
 g.fig.suptitle("Pairwise Relationships by Thalassemia Status", y=1.02)
-g.fig.savefig(os.path.join(OUT_DIR, "07_pairwise_scatter.png"),
-              bbox_inches="tight", dpi=150)
+g.fig.savefig(os.path.join(OUT_DIR, "07_pairwise_scatter.png"), dpi=DPI)
 plt.close(g.fig)
 print(f"Saved {os.path.join(OUT_DIR, '07_pairwise_scatter.png')}")
 
