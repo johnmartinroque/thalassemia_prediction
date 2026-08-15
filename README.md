@@ -1,5 +1,9 @@
 # 🫀 Thalassemia Status Predictor
 
+🔗 **Live demo:** [thalassemiaprediction-kmfdoggb9v3rymi8cptukn.streamlit.app](https://thalassemiaprediction-kmfdoggb9v3rymi8cptukn.streamlit.app)
+
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://thalassemiaprediction-kmfdoggb9v3rymi8cptukn.streamlit.app)
+
 A machine learning project that predicts **Thalassemia Status** from patient clinical data (the classic UCI Heart Disease dataset). It trains multiple classifiers, compares their performance, visualizes the dataset, and serves predictions through an interactive Streamlit web app.
 
 ## Overview
